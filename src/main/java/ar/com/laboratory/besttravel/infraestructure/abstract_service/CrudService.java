@@ -1,0 +1,8 @@
+package ar.com.laboratory.besttravel.infraestructure.abstract_service;
+
+public interface CrudService <RQ,RS,ID>{
+    RS created(RQ request);
+    RS read(ID id);
+    RS update(RQ request, ID id);
+    void delete(ID id);
+}
