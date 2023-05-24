@@ -1,4 +1,4 @@
-package ar.com.laboratory.besttravel.domain.entities;
+package ar.com.laboratory.besttravel.domain.entities.jpa;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,28 +10,24 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.UUID;
 
-@Entity(name = "reservation")
+@Entity(name = "ticket")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class ReservationEntity implements Serializable {
+public class TicketEntity implements Serializable {
 
     @Id
     private UUID id;
-    @Column(name = "date_reservation")
-    private LocalDateTime dateTimeReservation;
-    private LocalDate dateStart;
-    private LocalDate dateEnd;
-    private Integer totalDays;
+    private LocalDateTime departureDate;
+    private LocalDateTime arrivalDate;
+    private LocalDate purchaseDate;
     private BigDecimal price;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "hotel_id")
-    private HotelEntity hotel;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fly_id")
+    private FlyEntity fly;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tour_id", nullable = true)
@@ -40,7 +36,5 @@ public class ReservationEntity implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     private CustomerEntity customer;
-
-
 
 }

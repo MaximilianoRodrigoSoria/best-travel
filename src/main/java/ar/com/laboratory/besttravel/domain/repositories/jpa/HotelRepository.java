@@ -1,6 +1,6 @@
 package ar.com.laboratory.besttravel.domain.repositories.jpa;
 
-import ar.com.laboratory.besttravel.domain.entities.HotelEntity;
+import ar.com.laboratory.besttravel.domain.entities.jpa.HotelEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.math.BigDecimal;

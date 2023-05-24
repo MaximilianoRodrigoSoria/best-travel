@@ -1,6 +1,6 @@
 package ar.com.laboratory.besttravel.domain.repositories.jpa;
 
-import ar.com.laboratory.besttravel.domain.entities.FlyEntity;
+import ar.com.laboratory.besttravel.domain.entities.jpa.FlyEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

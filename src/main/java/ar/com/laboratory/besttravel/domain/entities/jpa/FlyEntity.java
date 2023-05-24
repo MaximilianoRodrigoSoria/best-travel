@@ -1,4 +1,4 @@
-package ar.com.laboratory.besttravel.domain.entities;
+package ar.com.laboratory.besttravel.domain.entities.jpa;
 
 import ar.com.laboratory.besttravel.util.AeroLine;
 import jakarta.persistence.*;
