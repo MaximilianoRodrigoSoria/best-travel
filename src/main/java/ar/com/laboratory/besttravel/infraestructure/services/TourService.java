@@ -30,39 +30,37 @@ public class TourService implements ITourService {
     private final TourHelper tourHelper;
 
     @Override
-    public void removeTicket(UUID ticketId, Long tourId) {
+    public void removeTicket(Long tourId,UUID ticketId) {
        var tourUpdate = this.tourRepository.findById(tourId).orElseThrow();
        tourUpdate.removeTicket(ticketId);
        this.tourRepository.save(tourUpdate);
     }
 
     @Override
-    public UUID addTicket(Long flyId, Long tourId) {
+    public UUID addTicket(Long tourId,Long flyId) {
         var tourUpdate = this.tourRepository.findById(tourId).orElseThrow();
         var fly = this.flyRepository.findById(flyId).orElseThrow();
         var ticket = tourHelper.createTicket(fly,tourUpdate.getCustomer());
-
-        return null;
+        tourUpdate.addTicket(ticket);
+        this.tourRepository.save(tourUpdate);
+        return ticket.getId();
     }
 
     @Override
-    public void removeHotel(UUID hoteltId, Long tourId) {
-
+    public void removeReservation(Long tourId,UUID reservationId) {
+        var tourUpdate = this.tourRepository.findById(tourId).orElseThrow();
+        tourUpdate.removeReservation(reservationId);
+        this.tourRepository.save(tourUpdate);
     }
 
     @Override
-    public UUID addHotel(Long hotelId, Long tourId) {
-        return null;
-    }
-
-    @Override
-    public void removeReservation(UUID reservationId, Long tourId) {
-
-    }
-
-    @Override
-    public UUID addReservation(Long reservationId, Long tourId) {
-        return null;
+    public UUID addReservation(Long tourId,Long hotelId, Integer totalDays) {
+        var tourUpdate = this.tourRepository.findById(tourId).orElseThrow();
+        var hotel = this.hotelRepository.findById(hotelId).orElseThrow();
+        var reservation = this.tourHelper.createReservation(hotel, tourUpdate.getCustomer(), totalDays);
+        tourUpdate.addReservation(reservation);
+        this.tourRepository.save(tourUpdate);
+        return reservation.getId();
     }
 
     @Override

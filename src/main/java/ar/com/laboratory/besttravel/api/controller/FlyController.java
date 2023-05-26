@@ -29,7 +29,7 @@ public class FlyController {
             @RequestParam SortType sortType
             ){
         if(Objects.isNull(sortType))sortType=SortType.NONE;
-        var response =flyService.readAll(page, size, sortType);
+        var response = flyService.readAll(page, size, sortType);
         return  response.isEmpty()?ResponseEntity.noContent().build():ResponseEntity.ok(response);
     }
 
