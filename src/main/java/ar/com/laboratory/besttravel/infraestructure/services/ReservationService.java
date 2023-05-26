@@ -41,6 +41,7 @@ public class ReservationService implements IReservationService {
                 .totalDays(request.getTotalDays())
                 .dateStart(LocalDate.now())
                 .dateEnd(LocalDate.now().plusDays(request.getTotalDays()))
+                .price(hotel.getPrice().add(hotel.getPrice().multiply(CHARGER_PRICE_PERCENTAGE)))
                 .build();
         var reservationSaved = reservationRepository.save(reservation);
         return this.entityToResponse(reservationSaved) ;

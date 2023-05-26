@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -34,20 +35,29 @@ public class FlyService implements IFlyService {
     }
 
     @Override
-    public Set readPrice(BigDecimal price) {
-        return null;
+    public Set<FlyResponse> readLessPrice(BigDecimal price) {
+        return this.flyRepository.selectLessPrice(price)
+                .stream()
+                .map(this::entityToResponse)
+                .collect(Collectors.toSet());
     }
 
     @Override
-    public Set readBetweenPrices(BigDecimal min, BigDecimal max) {
-        return null;
+    public Set<FlyResponse> readBetweenPrices(BigDecimal min, BigDecimal max) {
+        return this.flyRepository.selectBetWeenPrice(min, max)
+                .stream()
+                .map(this::entityToResponse)
+                .collect(Collectors.toSet());
     }
 
 
 
     @Override
     public Set<FlyResponse> readByOriginDestiny(String origin, String destiny) {
-        return null;
+        return this.flyRepository.selectOriginDestiny(origin,destiny)
+                .stream()
+                .map(this::entityToResponse)
+                .collect(Collectors.toSet());
     }
 
     private  FlyResponse entityToResponse(FlyEntity entity){

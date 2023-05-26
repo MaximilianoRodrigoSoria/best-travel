@@ -8,7 +8,7 @@ import java.util.Set;
 
 public interface CatalogService<R> {
     Page<R>readAll(Integer page, Integer size,SortType sortType);
-    Set<R>readPrice(BigDecimal price);
+    Set<R>readLessPrice(BigDecimal price);
     Set<R>readBetweenPrices(BigDecimal min, BigDecimal max);
     String FIELD_BY_SHORT = "price";
 }
