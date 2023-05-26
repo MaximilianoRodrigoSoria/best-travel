@@ -1,6 +1,6 @@
 package ar.com.laboratory.besttravel.infraestructure.abstract_service;
 
-import ar.com.laboratory.besttravel.util.SortType;
+import ar.com.laboratory.besttravel.util.enums.SortType;
 import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;

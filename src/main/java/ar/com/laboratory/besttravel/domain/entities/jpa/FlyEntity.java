@@ -1,6 +1,6 @@
 package ar.com.laboratory.besttravel.domain.entities.jpa;
 
-import ar.com.laboratory.besttravel.util.AeroLine;
+import ar.com.laboratory.besttravel.util.enums.AeroLine;
 import jakarta.persistence.*;
 import lombok.*;
 

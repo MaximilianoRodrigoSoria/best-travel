@@ -1,5 +1,7 @@
 package ar.com.laboratory.besttravel.api.models.requests;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +15,10 @@ import java.io.Serializable;
 @Builder
 public class TourHotelRequest implements Serializable {
 
+    @Positive
+    @NotNull(message = "Id hotel is mandatory")
     public Long id;
-    private  Integer totalDays;
+    @Positive
+    @NotNull(message = "Total days is mandatory")
+    private Integer totalDays;
 }

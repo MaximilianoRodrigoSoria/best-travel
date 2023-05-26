@@ -1,4 +1,4 @@
-package ar.com.laboratory.besttravel.util;
+package ar.com.laboratory.besttravel.util.enums;
 
 public enum SortType {
     LOWER,

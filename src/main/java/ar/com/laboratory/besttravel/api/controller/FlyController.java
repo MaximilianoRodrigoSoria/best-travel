@@ -3,7 +3,7 @@ package ar.com.laboratory.besttravel.api.controller;
 
 import ar.com.laboratory.besttravel.api.models.responses.FlyResponse;
 import ar.com.laboratory.besttravel.infraestructure.abstract_service.IFlyService;
-import ar.com.laboratory.besttravel.util.SortType;
+import ar.com.laboratory.besttravel.util.enums.SortType;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;

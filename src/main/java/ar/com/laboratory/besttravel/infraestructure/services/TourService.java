@@ -8,7 +8,9 @@ import ar.com.laboratory.besttravel.domain.repositories.jpa.FlyRepository;
 import ar.com.laboratory.besttravel.domain.repositories.jpa.HotelRepository;
 import ar.com.laboratory.besttravel.domain.repositories.jpa.TourRepository;
 import ar.com.laboratory.besttravel.infraestructure.abstract_service.ITourService;
+import ar.com.laboratory.besttravel.infraestructure.abstract_service.helpers.BlacklistHelper;
 import ar.com.laboratory.besttravel.infraestructure.abstract_service.helpers.TourHelper;
+import ar.com.laboratory.besttravel.util.enums.Tables;
 import ar.com.laboratory.besttravel.util.exceptions.IdNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ public class TourService implements ITourService {
     private final FlyRepository flyRepository;
     private final HotelRepository hotelRepository;
     private final TourHelper tourHelper;
+    private final BlacklistHelper blacklistHelper;
 
     @Override
     public void removeTicket(Long tourId,UUID ticketId) {
@@ -66,11 +69,13 @@ public class TourService implements ITourService {
 
     @Override
     public TourResponse create(TourRequest request) {
-        var customer = customerRepository.findById(request.getCustomerId()).orElseThrow(()-> new IdNotFoundException("Customer"));
+        blacklistHelper.isInBlacklist(request.getCustomerId());
+        var customer = customerRepository.findById(request.getCustomerId()).orElseThrow(()-> new IdNotFoundException(Tables.Customer.name()));
+
         var flights = new HashSet<FlyEntity>();
         var hotels = new HashMap<HotelEntity,Integer>();
-        request.getFlights().forEach(fly ->flights.add(flyRepository.findById(fly.getId()).orElseThrow(()-> new IdNotFoundException("Fly"))));
-        request.getHotels().forEach(hotel -> hotels.put(hotelRepository.findById(hotel.getId()).orElseThrow(()-> new IdNotFoundException("Hotel")), hotel.getTotalDays()));
+        request.getFlights().forEach(fly ->flights.add(flyRepository.findById(fly.getId()).orElseThrow(()-> new IdNotFoundException(Tables.Fly.name()))));
+        request.getHotels().forEach(hotel -> hotels.put(hotelRepository.findById(hotel.getId()).orElseThrow(()-> new IdNotFoundException(Tables.Hotel.name())), hotel.getTotalDays()));
         var tourToSave = TourEntity.builder()
                 .customer(customer)
                 .tickets(tourHelper.createTickets(flights, customer))
@@ -86,7 +91,7 @@ public class TourService implements ITourService {
 
     @Override
     public TourResponse read(Long id) {
-        var tourFromDb = this.tourRepository.findById(id).orElseThrow(()-> new IdNotFoundException("Tour"));
+        var tourFromDb = this.tourRepository.findById(id).orElseThrow(()-> new IdNotFoundException(Tables.Tour.name()));
         return TourResponse.builder()
                 .reservationIds(tourFromDb.getTickets().stream().map(TicketEntity::getId).collect(Collectors.toSet()))
                 .ticketIds(tourFromDb.getTickets().stream().map(TicketEntity::getId).collect(Collectors.toSet()))
@@ -96,7 +101,7 @@ public class TourService implements ITourService {
 
     @Override
     public void delete(Long id) {
-        var tourToDelete = this.tourRepository.findById(id).orElseThrow(()-> new IdNotFoundException("Tour"));
+        var tourToDelete = this.tourRepository.findById(id).orElseThrow(()-> new IdNotFoundException(Tables.Tour.name()));
         this.tourRepository.delete(tourToDelete);
 
     }

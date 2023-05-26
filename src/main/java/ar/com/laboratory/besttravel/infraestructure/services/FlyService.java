@@ -4,7 +4,7 @@ import ar.com.laboratory.besttravel.api.models.responses.FlyResponse;
 import ar.com.laboratory.besttravel.domain.entities.jpa.FlyEntity;
 import ar.com.laboratory.besttravel.domain.repositories.jpa.FlyRepository;
 import ar.com.laboratory.besttravel.infraestructure.abstract_service.IFlyService;
-import ar.com.laboratory.besttravel.util.SortType;
+import ar.com.laboratory.besttravel.util.enums.SortType;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
