@@ -8,6 +8,7 @@ import ar.com.laboratory.besttravel.domain.repositories.jpa.CustomerRepository;
 import ar.com.laboratory.besttravel.domain.repositories.jpa.HotelRepository;
 import ar.com.laboratory.besttravel.domain.repositories.jpa.ReservationRepository;
 import ar.com.laboratory.besttravel.infraestructure.abstract_service.IReservationService;
+import ar.com.laboratory.besttravel.infraestructure.abstract_service.helpers.ApiCurrencyConnectorHelper;
 import ar.com.laboratory.besttravel.infraestructure.abstract_service.helpers.BlacklistHelper;
 import ar.com.laboratory.besttravel.util.enums.Tables;
 import ar.com.laboratory.besttravel.util.exceptions.IdNotFoundException;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Currency;
 import java.util.UUID;
 
 @Transactional
@@ -32,6 +34,7 @@ public class ReservationService implements IReservationService {
     private final HotelRepository hotelRepository;
     private final CustomerRepository customerRepository;
     private final BlacklistHelper blacklistHelper;
+    private final ApiCurrencyConnectorHelper currencyConnectorHelper;
     @Override
     public ReservationResponse created(ReservationRequest request) {
         blacklistHelper.isInBlacklist(request.getIdClient());
@@ -96,8 +99,13 @@ public class ReservationService implements IReservationService {
     private  static  final BigDecimal CHARGER_PRICE_PERCENTAGE = BigDecimal.valueOf(0.25);
 
     @Override
-    public BigDecimal findPrice(Long idHotel) {
-        var hotel = hotelRepository.findById(idHotel).orElseThrow(()-> new IdNotFoundException(Tables.Hotel.name()));
-        return hotel.getPrice();
+    public BigDecimal findPrice(Long hotelId, Currency currency) {
+        var hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new IdNotFoundException(Tables.Hotel.name()));
+
+        var priceInDollars =  hotel.getPrice().add(hotel.getPrice().multiply(CHARGER_PRICE_PERCENTAGE));
+        if (currency.equals(Currency.getInstance("USD"))) return priceInDollars;
+        var currencyDTO = this.currencyConnectorHelper.getCurrency(currency);
+        log.info("API currency in {}, response: {}", currencyDTO.getExchangeDate().toString(), currencyDTO.getRates());
+        return priceInDollars.multiply(currencyDTO.getRates().get(currency));
     }
 }

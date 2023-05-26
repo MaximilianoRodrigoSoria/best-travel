@@ -4,9 +4,10 @@ import ar.com.laboratory.besttravel.api.models.requests.ReservationRequest;
 import ar.com.laboratory.besttravel.api.models.responses.ReservationResponse;
 
 import java.math.BigDecimal;
+import java.util.Currency;
 import java.util.UUID;
 
 public interface IReservationService  extends CrudService<ReservationRequest, ReservationResponse, UUID> {
 
-    BigDecimal findPrice(Long idHotel);
+    BigDecimal findPrice(Long idHotel, Currency currency);
 }
