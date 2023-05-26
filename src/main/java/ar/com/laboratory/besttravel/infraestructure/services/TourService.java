@@ -9,6 +9,7 @@ import ar.com.laboratory.besttravel.domain.repositories.jpa.HotelRepository;
 import ar.com.laboratory.besttravel.domain.repositories.jpa.TourRepository;
 import ar.com.laboratory.besttravel.infraestructure.abstract_service.ITourService;
 import ar.com.laboratory.besttravel.infraestructure.abstract_service.helpers.TourHelper;
+import ar.com.laboratory.besttravel.util.exceptions.IdNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,11 +66,11 @@ public class TourService implements ITourService {
 
     @Override
     public TourResponse create(TourRequest request) {
-        var customer = customerRepository.findById(request.getCustomerId()).orElseThrow();
+        var customer = customerRepository.findById(request.getCustomerId()).orElseThrow(()-> new IdNotFoundException("Customer"));
         var flights = new HashSet<FlyEntity>();
         var hotels = new HashMap<HotelEntity,Integer>();
-        request.getFlights().forEach(fly ->flights.add(flyRepository.findById(fly.getId()).orElseThrow()));
-        request.getHotels().forEach(hotel -> hotels.put(hotelRepository.findById(hotel.getId()).orElseThrow(), hotel.getTotalDays()));
+        request.getFlights().forEach(fly ->flights.add(flyRepository.findById(fly.getId()).orElseThrow(()-> new IdNotFoundException("Fly"))));
+        request.getHotels().forEach(hotel -> hotels.put(hotelRepository.findById(hotel.getId()).orElseThrow(()-> new IdNotFoundException("Hotel")), hotel.getTotalDays()));
         var tourToSave = TourEntity.builder()
                 .customer(customer)
                 .tickets(tourHelper.createTickets(flights, customer))
@@ -85,7 +86,7 @@ public class TourService implements ITourService {
 
     @Override
     public TourResponse read(Long id) {
-        var tourFromDb = this.tourRepository.findById(id).orElseThrow();
+        var tourFromDb = this.tourRepository.findById(id).orElseThrow(()-> new IdNotFoundException("Tour"));
         return TourResponse.builder()
                 .reservationIds(tourFromDb.getTickets().stream().map(TicketEntity::getId).collect(Collectors.toSet()))
                 .ticketIds(tourFromDb.getTickets().stream().map(TicketEntity::getId).collect(Collectors.toSet()))
@@ -95,7 +96,7 @@ public class TourService implements ITourService {
 
     @Override
     public void delete(Long id) {
-        var tourToDelete = this.tourRepository.findById(id).orElseThrow();
+        var tourToDelete = this.tourRepository.findById(id).orElseThrow(()-> new IdNotFoundException("Tour"));
         this.tourRepository.delete(tourToDelete);
 
     }
