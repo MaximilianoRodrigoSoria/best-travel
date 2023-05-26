@@ -3,11 +3,11 @@ package ar.com.laboratory.besttravel.api.controller;
 import ar.com.laboratory.besttravel.api.models.requests.TourRequest;
 import ar.com.laboratory.besttravel.api.models.responses.TourResponse;
 import ar.com.laboratory.besttravel.infraestructure.abstract_service.ITourService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
@@ -15,6 +15,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(path = "/api/v1/tour")
 @AllArgsConstructor
+@Tag(name="Tour")
 public class TourController {
 
     private ITourService tourService;
