@@ -10,6 +10,8 @@ import ar.com.laboratory.besttravel.domain.repositories.jpa.ReservationRepositor
 import ar.com.laboratory.besttravel.infraestructure.abstract_service.IReservationService;
 import ar.com.laboratory.besttravel.infraestructure.abstract_service.helpers.ApiCurrencyConnectorHelper;
 import ar.com.laboratory.besttravel.infraestructure.abstract_service.helpers.BlacklistHelper;
+import ar.com.laboratory.besttravel.infraestructure.abstract_service.helpers.CustomerHelper;
+import ar.com.laboratory.besttravel.infraestructure.abstract_service.helpers.EmailHelper;
 import ar.com.laboratory.besttravel.util.enums.Tables;
 import ar.com.laboratory.besttravel.util.exceptions.IdNotFoundException;
 import lombok.AllArgsConstructor;
@@ -22,6 +24,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Currency;
+import java.util.Objects;
 import java.util.UUID;
 
 @Transactional
@@ -34,13 +37,15 @@ public class ReservationService implements IReservationService {
     private final HotelRepository hotelRepository;
     private final CustomerRepository customerRepository;
     private final BlacklistHelper blacklistHelper;
+    private final CustomerHelper customerHelper;
     private final ApiCurrencyConnectorHelper currencyConnectorHelper;
+    private final EmailHelper emailHelper;
     @Override
     public ReservationResponse created(ReservationRequest request) {
         blacklistHelper.isInBlacklist(request.getIdClient());
         var hotel = hotelRepository.findById(request.getIdHotel()).orElseThrow(()-> new IdNotFoundException(Tables.Hotel.name()));
         var customer = customerRepository.findById(request.getIdClient()).orElseThrow(()-> new IdNotFoundException(Tables.Customer.name()));
-        var reservation = ReservationEntity.builder()
+        var reservationToPersist = ReservationEntity.builder()
                 .id(UUID.randomUUID())
                 .price(hotel.getPrice())
                 .hotel(hotel)
@@ -51,8 +56,11 @@ public class ReservationService implements IReservationService {
                 .dateEnd(LocalDate.now().plusDays(request.getTotalDays()))
                 .price(hotel.getPrice().add(hotel.getPrice().multiply(CHARGER_PRICE_PERCENTAGE)))
                 .build();
-        var reservationSaved = reservationRepository.save(reservation);
-        return this.entityToResponse(reservationSaved) ;
+        var reservationPersisted = reservationRepository.save(reservationToPersist);
+        this.customerHelper.incrase(customer.getDni(), ReservationService.class);
+
+        if(Objects.nonNull(request.getEmail())) this.emailHelper.sendMail(request.getEmail(), customer.getFullName(), Tables.Reservation.name(),"Aviso de reservacion");
+        return this.entityToResponse(reservationPersisted);
     }
 
     @Override
