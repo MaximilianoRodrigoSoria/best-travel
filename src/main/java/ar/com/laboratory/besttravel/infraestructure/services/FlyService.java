@@ -4,9 +4,11 @@ import ar.com.laboratory.besttravel.api.models.responses.FlyResponse;
 import ar.com.laboratory.besttravel.domain.entities.jpa.FlyEntity;
 import ar.com.laboratory.besttravel.domain.repositories.jpa.FlyRepository;
 import ar.com.laboratory.besttravel.infraestructure.abstract_service.IFlyService;
+import ar.com.laboratory.besttravel.util.CacheConstants;
 import ar.com.laboratory.besttravel.util.enums.SortType;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -35,6 +37,7 @@ public class FlyService implements IFlyService {
     }
 
     @Override
+    @Cacheable(value = CacheConstants.FLY_CACHE_NAME)
     public Set<FlyResponse> readLessPrice(BigDecimal price) {
         return this.flyRepository.selectLessPrice(price)
                 .stream()
@@ -43,6 +46,7 @@ public class FlyService implements IFlyService {
     }
 
     @Override
+    @Cacheable(value = CacheConstants.FLY_CACHE_NAME)
     public Set<FlyResponse> readBetweenPrices(BigDecimal min, BigDecimal max) {
         return this.flyRepository.selectBetWeenPrice(min, max)
                 .stream()
@@ -53,6 +57,7 @@ public class FlyService implements IFlyService {
 
 
     @Override
+    @Cacheable(value = CacheConstants.FLY_CACHE_NAME)
     public Set<FlyResponse> readByOriginDestiny(String origin, String destiny) {
         return this.flyRepository.selectOriginDestiny(origin,destiny)
                 .stream()
