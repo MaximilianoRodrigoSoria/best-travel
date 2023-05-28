@@ -59,7 +59,7 @@ public class ReservationService implements IReservationService {
         var reservationPersisted = reservationRepository.save(reservationToPersist);
         this.customerHelper.incrase(customer.getDni(), ReservationService.class);
 
-        if(Objects.nonNull(request.getEmail())) this.emailHelper.sendMail(request.getEmail(), customer.getFullName(), Tables.Reservation.name(),"Aviso de reservacion");
+        if(Objects.nonNull(request.getEmail())) this.emailHelper.sendMail(request.getEmail(), customer.getFullName(), Tables.Reservation.name(),"Boda de Yesi y Maxi Soria");
         return this.entityToResponse(reservationPersisted);
     }
 
