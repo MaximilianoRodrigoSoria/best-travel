@@ -4,6 +4,7 @@ import ar.com.laboratory.besttravel.api.models.responses.BaseErrorResponse;
 import ar.com.laboratory.besttravel.api.models.responses.ErrorResponse;
 import ar.com.laboratory.besttravel.api.models.responses.ErrorsResponse;
 import ar.com.laboratory.besttravel.util.exceptions.IdNotFoundException;
+import ar.com.laboratory.besttravel.util.exceptions.UsernameNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,8 +17,9 @@ import java.util.ArrayList;
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class BadRequestHandler {
 
-    @ExceptionHandler(IdNotFoundException.class)
-    public BaseErrorResponse idNotFound(IdNotFoundException exception){
+    @ExceptionHandler({IdNotFoundException.class, UsernameNotFoundException.class})
+
+    public BaseErrorResponse idNotFound(RuntimeException exception){
         return  ErrorResponse.builder()
                 .message(exception.getMessage())
                 .code(HttpStatus.BAD_REQUEST.value())

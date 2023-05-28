@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
 
-  db:
+  db-sql:
     image: postgres:15.2
     container_name: best_travel
     restart: always
@@ -23,3 +23,16 @@ services:
     ports:
       - "6379:6379"
     command: redis-server --loglevel warning --requirepass laboratory
+
+  document-db:
+    image: mongo:6.0.4
+    restart: always
+    container_name: best_travel_users
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: master
+      MONGO_INITDB_ROOT_PASSWORD: laboratory
+      MONGO_INITDB_DATABASE: users
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./db/mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
